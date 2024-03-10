@@ -2,7 +2,7 @@ import {Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, Ht
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import {UserIdValidationPipe} from "./user-id-validation.pipe";
+import {UUIdValidationPipe} from "../validation/uuid-validation.pipe";
 
 @Controller('user')
 export class UserController {
@@ -23,7 +23,7 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id', UserIdValidationPipe) id: string) {
+  findOne(@Param('id', UUIdValidationPipe) id: string) {
     const user = this.userService.findOne(id);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -32,7 +32,7 @@ export class UserController {
   }
 
   @Patch(':id')
-  update(@Param('id', UserIdValidationPipe) id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param('id', UUIdValidationPipe) id: string, @Body() updateUserDto: UpdateUserDto) {
     const user = this.userService.update(id, updateUserDto);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -42,7 +42,11 @@ export class UserController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', UserIdValidationPipe) id: string) {
+  remove(@Param('id', UUIdValidationPipe) id: string) {
+    const user = this.userService.findOne(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     return this.userService.remove(id);
   }
 }
