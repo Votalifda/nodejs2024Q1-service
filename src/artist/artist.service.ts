@@ -1,9 +1,7 @@
-import {ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import {User} from "../user/user.interface";
 import {v4 as uuidv4} from "uuid";
-import {UserDto} from "../user/dto/user.dto";
 import {plainToClass} from "class-transformer";
 import {ArtistDto} from "./dto/artist.dto";
 
@@ -21,6 +19,7 @@ export class ArtistService {
       grammy: true
     }
   ];
+
   create(createArtistDto: CreateArtistDto) {
     const artist: Artist = {
       id: uuidv4(),
