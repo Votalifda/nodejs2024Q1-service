@@ -7,7 +7,7 @@ import {ArtistDto} from "./dto/artist.dto";
 
 @Injectable()
 export class ArtistService {
-  private artists: Artist[] = [
+  public artists: Artist[] = [
     {
       id: '9ffe2ff7-7d15-4682-a000-a5e398c70e11',
       name: 'Artist-1',

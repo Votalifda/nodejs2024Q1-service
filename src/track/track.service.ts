@@ -7,7 +7,7 @@ import {plainToClass} from "class-transformer";
 
 @Injectable()
 export class TrackService {
-  private tracks: Track[] = [
+  public tracks: Track[] = [
     {
       id: '9ffe2ff7-7d15-0000-a000-a5e398c70e11',
       name: 'Track-1',

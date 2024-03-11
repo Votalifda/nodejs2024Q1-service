@@ -7,7 +7,7 @@ import {v4 as uuidv4} from "uuid";
 
 @Injectable()
 export class AlbumService {
-  private albums: Album[] = [
+  public albums: Album[] = [
     {
       id: '9ffe2ff7-7d15-4682-a000-a5e398c70e11',
       name: 'Album-1',
