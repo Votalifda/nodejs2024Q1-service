@@ -4,23 +4,15 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 import {plainToClass} from "class-transformer";
 import {AlbumDto} from "./dto/album.dto";
 import {v4 as uuidv4} from "uuid";
+import {TrackService} from "../track/track.service";
 
 @Injectable()
 export class AlbumService {
-  public albums: Album[] = [
-    {
-      id: '9ffe2ff7-7d15-4682-a000-a5e398c70e11',
-      name: 'Album-1',
-      year: 2000,
-      artistId: '9ffe2ff7-7d15-4682-a000-a5e398c70e11'
-    },
-    {
-      id: '9ffe2ff7-7d15-4682-a000-a5e398c70e12',
-      name: 'Album-2',
-      year: 2024,
-      artistId: '9ffe2ff7-7d15-4682-a000-a5e398c70e12'
-    }
-  ];
+  public albums: Album[] = [];
+
+  constructor(
+      private readonly tracksService: TrackService,
+  ) {}
 
   create(createAlbumDto: CreateAlbumDto) {
     const album: Album = {
@@ -60,6 +52,13 @@ export class AlbumService {
     if (!album) {
       throw new NotFoundException('Album not found');
     }
+
+    this.tracksService.tracks = this.tracksService.tracks.map(track => {
+      if (track.albumId === id) {
+        track.albumId = null;
+      }
+      return track;
+    });
 
     this.albums = this.albums.filter(album => album.id !== id);
   }

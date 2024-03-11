@@ -7,29 +7,7 @@ import {plainToClass} from "class-transformer";
 
 @Injectable()
 export class TrackService {
-  public tracks: Track[] = [
-    {
-      id: '9ffe2ff7-7d15-0000-a000-a5e398c70e11',
-      name: 'Track-1',
-      duration: 100,
-      artistId: '9ffe2ff7-0000-0000-a000-a5e398c70e11',
-      albumId: '9ffe2ff7-0000-0000-a000-a5e398c70e12',
-    },
-    {
-      id: '9ffe2ff7-7d15-0000-a000-a5e398c70e12',
-      name: 'Track-2',
-      duration: 50,
-      artistId: '9ffe2ff7-0000-0000-a000-a5e398c70e12',
-      albumId: '9ffe2ff7-0000-0000-a000-a5e398c70e12',
-    },
-    {
-      id: '9ffe2ff7-7d15-0000-a000-a5e398c70e13',
-      name: 'Track-3',
-      duration: 150,
-      artistId: '9ffe2ff7-0000-0000-a000-a5e398c70e12',
-      albumId: '9ffe2ff7-0000-0000-a000-a5e398c70e12',
-    }
-  ];
+  public tracks: Track[] = [];
 
   create(createTrackDto: CreateTrackDto) {
     const track: Track = {

@@ -3,17 +3,17 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   HttpCode,
   HttpStatus,
-  BadRequestException, NotFoundException
+  BadRequestException, NotFoundException, Put
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import {UUIdValidationPipe} from "../validation/uuid-validation.pipe";
+import {isNumber, isString} from "class-validator";
 
 @Controller('album')
 export class AlbumController {
@@ -26,8 +26,6 @@ export class AlbumController {
       throw new BadRequestException('Name is required');
     } else if (!createAlbumDto.year) {
       throw new BadRequestException('Year is required');
-    } else if (!createAlbumDto.artistId) {
-      throw new BadRequestException('ArtistId is required');
     }
 
     return this.albumService.create(createAlbumDto);
@@ -47,14 +45,12 @@ export class AlbumController {
     return album;
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id', UUIdValidationPipe) id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
-    if (!updateAlbumDto.name) {
+    if (!updateAlbumDto.name || !isString(updateAlbumDto.name)) {
       throw new BadRequestException('Name is required');
-    } else if (!updateAlbumDto.year) {
+    } else if (!updateAlbumDto.year || !isNumber(updateAlbumDto.year)) {
       throw new BadRequestException('Year is required');
-    } else if (!updateAlbumDto.artistId) {
-      throw new BadRequestException('ArtistId is required');
     }
 
     if (!this.albumService.findOne(id)) {

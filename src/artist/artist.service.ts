@@ -4,21 +4,17 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 import {v4 as uuidv4} from "uuid";
 import {plainToClass} from "class-transformer";
 import {ArtistDto} from "./dto/artist.dto";
+import {TrackService} from "../track/track.service";
+import {AlbumService} from "../album/album.service";
 
 @Injectable()
 export class ArtistService {
-  public artists: Artist[] = [
-    {
-      id: '9ffe2ff7-7d15-4682-a000-a5e398c70e11',
-      name: 'Artist-1',
-      grammy: false
-    },
-    {
-      id: '9ffe2ff7-7d15-4682-a000-a5e398c70e12',
-      name: 'Artist-2',
-      grammy: true
-    }
-  ];
+  public artists: Artist[] = [];
+
+  constructor(
+      private readonly tracksService: TrackService,
+      private readonly albumService: AlbumService,
+  ) {}
 
   create(createArtistDto: CreateArtistDto) {
     const artist: Artist = {
@@ -56,6 +52,20 @@ export class ArtistService {
     if (!artist) {
       throw new NotFoundException('Artist not found');
     }
+
+    this.tracksService.tracks = this.tracksService.tracks.map(track => {
+      if (track.artistId === id) {
+        track.artistId = null;
+      }
+      return track;
+    });
+
+    this.albumService.albums = this.albumService.albums.map(album => {
+      if (album.artistId === id) {
+        album.artistId = null;
+      }
+      return album;
+    });
 
     this.artists = this.artists.filter(artist => artist.id !== id);
   }

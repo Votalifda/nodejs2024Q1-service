@@ -8,5 +8,5 @@ export class ArtistDto {
     name: string;
 
     @Expose()
-    grammy: number;
+    grammy: boolean;
 }

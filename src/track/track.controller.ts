@@ -8,7 +8,7 @@ import {
   Delete,
   NotFoundException,
   HttpCode,
-  HttpStatus, BadRequestException
+  HttpStatus, BadRequestException, Put
 } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { CreateTrackDto } from './dto/create-track.dto';
@@ -26,10 +26,6 @@ export class TrackController {
       throw new BadRequestException('Name is required');
     } else if (!createTrackDto.duration) {
       throw new BadRequestException('Duration is required');
-    } else if (!createTrackDto.albumId) {
-      throw new BadRequestException('AlbumId is required');
-    } else if (!createTrackDto.artistId) {
-      throw new BadRequestException('ArtistId is required');
     }
 
     return this.trackService.create(createTrackDto);
@@ -49,16 +45,12 @@ export class TrackController {
     return track;
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id', UUIdValidationPipe) id: string, @Body() updateTrackDto: UpdateTrackDto) {
     if (!updateTrackDto.name) {
       throw new BadRequestException('Name is required');
     } else if (!updateTrackDto.duration) {
       throw new BadRequestException('Duration is required');
-    } else if (!updateTrackDto.albumId) {
-      throw new BadRequestException('AlbumId is required');
-    } else if (!updateTrackDto.artistId) {
-      throw new BadRequestException('ArtistId is required');
     }
 
     if (!this.trackService.findOne(id)) {
@@ -70,7 +62,7 @@ export class TrackController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string) {
+  remove(@Param('id', UUIdValidationPipe) id: string) {
     const track = this.trackService.findOne(id);
     if (!track) {
       throw new NotFoundException('Track not found');

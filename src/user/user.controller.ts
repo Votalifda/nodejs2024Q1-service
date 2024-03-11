@@ -1,4 +1,16 @@
-import {Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, HttpCode, HttpStatus, BadRequestException} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  NotFoundException,
+  HttpCode,
+  HttpStatus,
+  BadRequestException,
+  Put
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -31,13 +43,9 @@ export class UserController {
     return user;
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id', UUIdValidationPipe) id: string, @Body() updateUserDto: UpdateUserDto) {
-    const user = this.userService.update(id, updateUserDto);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return user;
+    return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')

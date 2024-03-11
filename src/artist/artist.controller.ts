@@ -3,17 +3,17 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   HttpCode,
   HttpStatus,
-  BadRequestException, NotFoundException
+  BadRequestException, NotFoundException, Put
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import {UUIdValidationPipe} from "../validation/uuid-validation.pipe";
+import {isBoolean, isString} from "class-validator";
 
 @Controller('artist')
 export class ArtistController {
@@ -22,9 +22,9 @@ export class ArtistController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createArtistDto: CreateArtistDto) {
-    if (!createArtistDto.name) {
+    if (!createArtistDto.name || !isString(createArtistDto.name)) {
       throw new BadRequestException('Name is required');
-    } else if (!createArtistDto.grammy) {
+    } else if (!createArtistDto.grammy || !isBoolean(createArtistDto.grammy)) {
       throw new BadRequestException('Grammy is required');
     }
 
@@ -45,11 +45,11 @@ export class ArtistController {
     return artist;
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id', UUIdValidationPipe) id: string, @Body() updateArtistDto: UpdateArtistDto) {
-    if (!updateArtistDto.name) {
+    if (!updateArtistDto.name || !isString(updateArtistDto.name)) {
       throw new BadRequestException('Name is required');
-    } else if (!updateArtistDto.grammy) {
+    } else if (!isBoolean(updateArtistDto.grammy)) {
       throw new BadRequestException('Grammy is required');
     }
 
