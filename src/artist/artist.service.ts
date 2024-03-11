@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {forwardRef, Inject, Injectable, NotFoundException} from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import {v4 as uuidv4} from "uuid";
@@ -6,6 +6,7 @@ import {plainToClass} from "class-transformer";
 import {ArtistDto} from "./dto/artist.dto";
 import {TrackService} from "../track/track.service";
 import {AlbumService} from "../album/album.service";
+import {FavsService} from "../favs/favs.service";
 
 @Injectable()
 export class ArtistService {
@@ -14,6 +15,7 @@ export class ArtistService {
   constructor(
       private readonly tracksService: TrackService,
       private readonly albumService: AlbumService,
+      @Inject(forwardRef(() => FavsService)) private favsService: FavsService
   ) {}
 
   create(createArtistDto: CreateArtistDto) {
@@ -67,6 +69,7 @@ export class ArtistService {
       return album;
     });
 
+    this.favsService.favs.artists = this.favsService.favs.artists.filter(artist => artist.id !== id);
     this.artists = this.artists.filter(artist => artist.id !== id);
   }
 

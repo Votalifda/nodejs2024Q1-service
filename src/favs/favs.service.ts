@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {forwardRef, Inject, Injectable, NotFoundException} from '@nestjs/common';
 import {AlbumService} from "../album/album.service";
 import {ArtistService} from "../artist/artist.service";
 import {TrackService} from "../track/track.service";
@@ -7,12 +7,12 @@ import {UnprocessableEntityException} from "@nestjs/common/exceptions/unprocessa
 @Injectable()
 export class FavsService {
   constructor(
-      private readonly tracksService: TrackService,
-      private readonly albumsService: AlbumService,
-      private readonly artistsService: ArtistService,
+      @Inject(forwardRef(() => TrackService)) private tracksService: TrackService,
+      @Inject(forwardRef(() => ArtistService)) private artistsService: ArtistService,
+      @Inject(forwardRef(() => AlbumService)) private albumService: AlbumService
   ) {}
 
-  private favs: FavoritesResponse = {
+  public favs: FavoritesResponse = {
     artists: [],
     albums: [],
     tracks: []
@@ -43,7 +43,7 @@ export class FavsService {
   }
 
   addAlbum(id: string) {
-    const item = this.albumsService.albums.find(album => album.id === id);
+    const item = this.albumService.albums.find(album => album.id === id);
     if (!item) {
       throw new UnprocessableEntityException('Album doesn\'t exist');
     }
@@ -83,5 +83,4 @@ export class FavsService {
 
     this.favs.artists= this.favs.artists.filter(artist => artist.id !== id);
   }
-
 }
