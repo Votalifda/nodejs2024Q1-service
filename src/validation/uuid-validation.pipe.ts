@@ -3,11 +3,11 @@ import { validate } from 'uuid';
 
 @Injectable()
 export class UUIdValidationPipe implements PipeTransform {
-    transform(value: any): string {
-        const isValidUuid = validate(value);
-        if (!isValidUuid) {
-            throw new BadRequestException('Invalid ID');
-        }
-        return value;
+  transform(value: any): string {
+    const isValidUuid = validate(value);
+    if (!isValidUuid) {
+      throw new BadRequestException('Invalid ID');
     }
+    return value;
+  }
 }

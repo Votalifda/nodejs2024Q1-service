@@ -1,18 +1,18 @@
 import { Expose } from 'class-transformer';
 
 export class TrackDto {
-    @Expose()
-    id: string;
+  @Expose()
+  id: string;
 
-    @Expose()
-    name: string;
+  @Expose()
+  name: string;
 
-    @Expose()
-    artistId: number;
+  @Expose()
+  artistId: number;
 
-    @Expose()
-    albumId: number;
+  @Expose()
+  albumId: number;
 
-    @Expose()
-    duration: number;
+  @Expose()
+  duration: number;
 }

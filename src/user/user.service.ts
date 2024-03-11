@@ -1,10 +1,15 @@
-import {BadRequestException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
-import {plainToClass} from "class-transformer";
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { plainToClass } from 'class-transformer';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import {User} from "./user.interface";
-import {UserDto} from "./dto/user.dto";
+import { User } from './user.interface';
+import { UserDto } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
@@ -24,19 +29,19 @@ export class UserService {
   }
 
   findAll() {
-    return this.users.map(user => this.toDto(user));
+    return this.users.map((user) => this.toDto(user));
   }
 
   findOne(id: string): UserDto {
-    const user = this.users.find(user => user.id === id);
+    const user = this.users.find((user) => user.id === id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return this.toDto(user)
+    return this.toDto(user);
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
-    const user = this.users.find(user => user.id === id);
+    const user = this.users.find((user) => user.id === id);
 
     if (!user && !updateUserDto.newPassword) {
       throw new BadRequestException('newPassword');
@@ -58,17 +63,18 @@ export class UserService {
   }
 
   remove(id: string) {
-    const user = this.users.find(user => user.id === id);
+    const user = this.users.find((user) => user.id === id);
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    this.users = this.users.filter(user => user.id !== id);
+    this.users = this.users.filter((user) => user.id !== id);
   }
 
   private toDto(user: User): UserDto {
     const { password, ...userDto } = user;
+    password.length;
     return plainToClass(UserDto, userDto);
   }
 }

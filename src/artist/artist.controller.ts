@@ -7,13 +7,15 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  BadRequestException, NotFoundException, Put
+  BadRequestException,
+  NotFoundException,
+  Put,
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import {UUIdValidationPipe} from "../validation/uuid-validation.pipe";
-import {isBoolean, isString} from "class-validator";
+import { UUIdValidationPipe } from '../validation/uuid-validation.pipe';
+import { isBoolean, isString } from 'class-validator';
 
 @Controller('artist')
 export class ArtistController {
@@ -46,7 +48,10 @@ export class ArtistController {
   }
 
   @Put(':id')
-  update(@Param('id', UUIdValidationPipe) id: string, @Body() updateArtistDto: UpdateArtistDto) {
+  update(
+    @Param('id', UUIdValidationPipe) id: string,
+    @Body() updateArtistDto: UpdateArtistDto,
+  ) {
     if (!updateArtistDto.name || !isString(updateArtistDto.name)) {
       throw new BadRequestException('Name is required');
     } else if (!isBoolean(updateArtistDto.grammy)) {

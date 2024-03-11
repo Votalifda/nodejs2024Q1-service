@@ -9,12 +9,12 @@ import {
   HttpCode,
   HttpStatus,
   BadRequestException,
-  Put
+  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import {UUIdValidationPipe} from "../validation/uuid-validation.pipe";
+import { UUIdValidationPipe } from '../validation/uuid-validation.pipe';
 
 @Controller('user')
 export class UserController {
@@ -44,7 +44,10 @@ export class UserController {
   }
 
   @Put(':id')
-  update(@Param('id', UUIdValidationPipe) id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(
+    @Param('id', UUIdValidationPipe) id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
     return this.userService.update(id, updateUserDto);
   }
 

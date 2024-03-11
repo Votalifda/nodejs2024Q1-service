@@ -1,6 +1,14 @@
-import {Controller, Get, Post, Param, Delete, HttpCode, HttpStatus} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { FavsService } from './favs.service';
-import {UUIdValidationPipe} from "../validation/uuid-validation.pipe";
+import { UUIdValidationPipe } from '../validation/uuid-validation.pipe';
 
 @Controller('favs')
 export class FavsController {
@@ -46,5 +54,4 @@ export class FavsController {
   removeAlbum(@Param('id', UUIdValidationPipe) id: string) {
     return this.favsService.removeAlbum(id);
   }
-
 }

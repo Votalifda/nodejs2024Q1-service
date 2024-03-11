@@ -7,13 +7,15 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  BadRequestException, NotFoundException, Put
+  BadRequestException,
+  NotFoundException,
+  Put,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import {UUIdValidationPipe} from "../validation/uuid-validation.pipe";
-import {isNumber, isString} from "class-validator";
+import { UUIdValidationPipe } from '../validation/uuid-validation.pipe';
+import { isNumber, isString } from 'class-validator';
 
 @Controller('album')
 export class AlbumController {
@@ -46,7 +48,10 @@ export class AlbumController {
   }
 
   @Put(':id')
-  update(@Param('id', UUIdValidationPipe) id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
+  update(
+    @Param('id', UUIdValidationPipe) id: string,
+    @Body() updateAlbumDto: UpdateAlbumDto,
+  ) {
     if (!updateAlbumDto.name || !isString(updateAlbumDto.name)) {
       throw new BadRequestException('Name is required');
     } else if (!updateAlbumDto.year || !isNumber(updateAlbumDto.year)) {

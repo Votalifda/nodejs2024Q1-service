@@ -3,17 +3,18 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   NotFoundException,
   HttpCode,
-  HttpStatus, BadRequestException, Put
+  HttpStatus,
+  BadRequestException,
+  Put,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import {UUIdValidationPipe} from "../validation/uuid-validation.pipe";
+import { UUIdValidationPipe } from '../validation/uuid-validation.pipe';
 
 @Controller('track')
 export class TrackController {
@@ -46,7 +47,10 @@ export class TrackController {
   }
 
   @Put(':id')
-  update(@Param('id', UUIdValidationPipe) id: string, @Body() updateTrackDto: UpdateTrackDto) {
+  update(
+    @Param('id', UUIdValidationPipe) id: string,
+    @Body() updateTrackDto: UpdateTrackDto,
+  ) {
     if (!updateTrackDto.name) {
       throw new BadRequestException('Name is required');
     } else if (!updateTrackDto.duration) {
