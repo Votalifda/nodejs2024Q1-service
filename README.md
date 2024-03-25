@@ -17,10 +17,11 @@ git clone https://github.com/Votalifda/nodejs2024Q1-service
 npm install
 ```
 
-## Running application
+## Run Docker
 
 ```
-npm start
+docker-compose up --build
+
 ```
 
 After starting the app on port (4000 as default) you can open
