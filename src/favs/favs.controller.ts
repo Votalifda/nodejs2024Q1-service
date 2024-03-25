@@ -15,43 +15,43 @@ export class FavsController {
   constructor(private readonly favsService: FavsService) {}
 
   @Get()
-  findAll() {
-    return this.favsService.findAll();
+  async findAll() {
+    return await this.favsService.findAll();
   }
 
   @Post('track/:id')
   @HttpCode(HttpStatus.CREATED)
-  addTrack(@Param('id', UUIdValidationPipe) id: string) {
-    return this.favsService.addTrack(id);
+  async addTrack(@Param('id', UUIdValidationPipe) id: string) {
+    return await this.favsService.addTrack(id);
   }
 
   @Delete('track/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeTrack(@Param('id', UUIdValidationPipe) id: string) {
-    return this.favsService.removeTrack(id);
+  async removeTrack(@Param('id', UUIdValidationPipe) id: string) {
+    return await this.favsService.removeTrack(id);
   }
 
   @Post('artist/:id')
   @HttpCode(HttpStatus.CREATED)
-  addArtist(@Param('id', UUIdValidationPipe) id: string) {
-    return this.favsService.addArtist(id);
+  async addArtist(@Param('id', UUIdValidationPipe) id: string) {
+    return await this.favsService.addArtist(id);
   }
 
   @Delete('artist/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeArtist(@Param('id', UUIdValidationPipe) id: string) {
-    return this.favsService.removeArtist(id);
+  async removeArtist(@Param('id', UUIdValidationPipe) id: string) {
+    return await this.favsService.removeArtist(id);
   }
 
   @Post('album/:id')
   @HttpCode(HttpStatus.CREATED)
-  addAlbum(@Param('id', UUIdValidationPipe) id: string) {
-    return this.favsService.addAlbum(id);
+  async addAlbum(@Param('id', UUIdValidationPipe) id: string) {
+    return await this.favsService.addAlbum(id);
   }
 
   @Delete('album/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeAlbum(@Param('id', UUIdValidationPipe) id: string) {
-    return this.favsService.removeAlbum(id);
+  async removeAlbum(@Param('id', UUIdValidationPipe) id: string) {
+    return await this.favsService.removeAlbum(id);
   }
 }

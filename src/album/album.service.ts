@@ -6,12 +6,18 @@ import { AlbumDto } from './dto/album.dto';
 import { Album } from './entities/album.entity';
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
+import {FavAlbums} from "../favs/entities/favAlbums.entity";
+import {Track} from "../track/entities/track.entity";
 
 @Injectable()
 export class AlbumService {
   constructor(
     @InjectRepository(Album)
     private albumRepository: Repository<Album>,
+    @InjectRepository(Track)
+    private trackRepository: Repository<Track>,
+    @InjectRepository(FavAlbums)
+    private favAlbumsRepository: Repository<FavAlbums>,
   ) {}
 
   async create(createAlbumDto: CreateAlbumDto) {
@@ -49,17 +55,8 @@ export class AlbumService {
       throw new NotFoundException('Album not found');
     }
 
-    // this.tracksService.tracks = this.tracksService.tracks.map((track) => {
-    //   if (track.albumId === id) {
-    //     track.albumId = null;
-    //   }
-    //   return track;
-    // });
-    //
-    // this.favsService.favs.albums = this.favsService.favs.albums.filter(
-    //   (album: Album) => album.id !== id,
-    // );
-
+    await this.favAlbumsRepository.delete({albumId: id});
+    await this.trackRepository.update({albumId: id}, {albumId: null});
     await this.albumRepository.delete(id);
   }
 

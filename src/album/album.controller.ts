@@ -15,7 +15,6 @@ import { AlbumService } from './album.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { UUIdValidationPipe } from '../validation/uuid-validation.pipe';
-import { isNumber, isString } from 'class-validator';
 
 @Controller('album')
 export class AlbumController {
@@ -23,30 +22,26 @@ export class AlbumController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createAlbumDto: CreateAlbumDto) {
-    return this.albumService.create(createAlbumDto);
+  async create(@Body() createAlbumDto: CreateAlbumDto) {
+    return await this.albumService.create(createAlbumDto);
   }
 
   @Get()
-  findAll() {
-    return this.albumService.findAll();
+  async findAll() {
+    return await this.albumService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', UUIdValidationPipe) id: string) {
-    const album = this.albumService.findOne(id);
-    if (!album) {
-      throw new NotFoundException('Album not found');
-    }
-    return album;
+  async findOne(@Param('id', UUIdValidationPipe) id: string) {
+    return await this.albumService.findOne(id);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', UUIdValidationPipe) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-    if (!this.albumService.findOne(id)) {
+    if (! await this.albumService.findOne(id)) {
       throw new NotFoundException('Album not found');
     }
 
@@ -55,8 +50,8 @@ export class AlbumController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', UUIdValidationPipe) id: string) {
-    const album = this.albumService.findOne(id);
+  async remove(@Param('id', UUIdValidationPipe) id: string) {
+    const album = await this.albumService.findOne(id);
     if (!album) {
       throw new NotFoundException('Album not found');
     }

@@ -9,34 +9,41 @@ import {
   HttpCode,
   HttpStatus,
   BadRequestException,
-  Put,
+  Put, ForbiddenException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UUIdValidationPipe } from '../validation/uuid-validation.pipe';
+import {InjectRepository} from "@nestjs/typeorm";
+import {User} from "./entities/user.entity";
+import {Repository} from "typeorm";
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+      private readonly userService: UserService,
+      @InjectRepository(User)
+      private userRepository: Repository<User>,
+    ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
     if (!createUserDto.login || !createUserDto.password) {
       throw new BadRequestException('Login and password are required');
     }
-    return this.userService.create(createUserDto);
+    return await this.userService.create(createUserDto);
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  async findAll() {
+    return await this.userService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', UUIdValidationPipe) id: string) {
-    const user = this.userService.findOne(id);
+  async findOne(@Param('id', UUIdValidationPipe) id: string) {
+    const user = await this.userService.findOne(id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -44,20 +51,27 @@ export class UserController {
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', UUIdValidationPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.userService.update(id, updateUserDto);
+    const user = await this.userRepository.findOne({where: {id}});
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (updateUserDto.password == updateUserDto.oldPassword || user.password != updateUserDto.oldPassword) {
+      throw new ForbiddenException('Password is wrong');
+    }
+    return await this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', UUIdValidationPipe) id: string) {
-    const user = this.userService.findOne(id);
+  async remove(@Param('id', UUIdValidationPipe) id: string) {
+    const user = await this.userService.findOne(id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return this.userService.remove(id);
+    return await this.userService.remove(id);
   }
 }

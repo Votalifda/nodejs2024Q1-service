@@ -48,7 +48,7 @@ export class UserService {
       login: updateUserDto.login,
       password: updateUserDto.newPassword,
       version: user.version+=1,
-      updatedAt: Math.floor(Date.now() / 1000)
+      updatedAt: Math.floor(Date.now() / 1000)+1
     });
 
     const updatedUser = await this.userRepository.findOne({where: {id}});

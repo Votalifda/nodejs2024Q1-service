@@ -6,6 +6,9 @@ import { ArtistDto } from './dto/artist.dto';
 import {Artist} from "./entities/artist.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
+import {Album} from "../album/entities/album.entity";
+import {Track} from "../track/entities/track.entity";
+import {FavArtists} from "../favs/entities/favArtists.entity";
 
 @Injectable()
 export class ArtistService {
@@ -14,6 +17,12 @@ export class ArtistService {
   constructor(
     @InjectRepository(Artist)
     private artistRepository: Repository<Artist>,
+    @InjectRepository(Album)
+    private albumRepository: Repository<Album>,
+    @InjectRepository(Track)
+    private trackRepository: Repository<Track>,
+    @InjectRepository(FavArtists)
+    private favArtistsRepository: Repository<FavArtists>,
   ) {}
 
   async create(createArtistDto: CreateArtistDto) {
@@ -50,25 +59,10 @@ export class ArtistService {
     if (!artist) {
       throw new NotFoundException('Artist not found');
     }
-    //
-    // this.tracksService.tracks = this.tracksService.tracks.map((track) => {
-    //   if (track.artistId === id) {
-    //     track.artistId = null;
-    //   }
-    //   return track;
-    // });
-    //
-    // this.albumService.albums = this.albumService.albums.map((album) => {
-    //   if (album.artistId === id) {
-    //     album.artistId = null;
-    //   }
-    //   return album;
-    // });
-    //
-    // this.favsService.favs.artists = this.favsService.favs.artists.filter(
-    //   (artist) => artist.id !== id,
-    // );
 
+    await this.favArtistsRepository.delete({artistId: id});
+    await this.trackRepository.update({artistId: id}, {artistId: null});
+    await this.albumRepository.update({artistId: id}, {artistId: null});
     await this.artistRepository.delete(id);
   }
 

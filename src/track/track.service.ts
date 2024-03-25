@@ -6,12 +6,15 @@ import { plainToClass } from 'class-transformer';
 import {Track} from "./entities/track.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
+import {FavTracks} from "../favs/entities/favTracks.entity";
 
 @Injectable()
 export class TrackService {
   constructor(
       @InjectRepository(Track)
       private trackRepository: Repository<Track>,
+      @InjectRepository(FavTracks)
+      private favTracksRepository: Repository<FavTracks>,
   ) {}
 
   async create(createTrackDto: CreateTrackDto) {
@@ -49,10 +52,7 @@ export class TrackService {
       throw new NotFoundException('Track not found');
     }
 
-    // this.favsService.favs.tracks = this.favsService.favs.tracks.filter(
-    //   (track) => track.id !== id,
-    // );
-
+    await this.favTracksRepository.delete({trackId: id});
     await this.trackRepository.delete(id);
   }
 
