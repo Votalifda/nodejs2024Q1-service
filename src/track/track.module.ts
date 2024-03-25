@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { TrackController } from './track.controller';
-import {TypeOrmModule} from "@nestjs/typeorm";
-import {Track} from "./entities/track.entity";
-import {FavTracks} from "../favs/entities/favTracks.entity";
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Track } from './entities/track.entity';
+import { FavTracks } from '../favs/entities/favTracks.entity';
 
 @Module({
   imports: [

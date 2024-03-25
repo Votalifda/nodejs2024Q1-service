@@ -1,8 +1,8 @@
-import {Entity, Column, PrimaryColumn} from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class FavArtists {
-    @Column()
-    @PrimaryColumn('uuid')
-    artistId: string;
+  @Column()
+  @PrimaryColumn('uuid')
+  artistId: string;
 }

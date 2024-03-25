@@ -1,14 +1,14 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { plainToClass } from 'class-transformer';
 import { ArtistDto } from './dto/artist.dto';
-import {Artist} from "./entities/artist.entity";
-import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
-import {Album} from "../album/entities/album.entity";
-import {Track} from "../track/entities/track.entity";
-import {FavArtists} from "../favs/entities/favArtists.entity";
+import { Artist } from './entities/artist.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Album } from '../album/entities/album.entity';
+import { Track } from '../track/entities/track.entity';
+import { FavArtists } from '../favs/entities/favArtists.entity';
 
 @Injectable()
 export class ArtistService {
@@ -37,7 +37,7 @@ export class ArtistService {
   }
 
   async findOne(id: string) {
-    const artist = await this.artistRepository.findOne({where: {id}});
+    const artist = await this.artistRepository.findOne({ where: { id } });
     if (!artist) {
       throw new NotFoundException('Artist not found');
     }
@@ -46,7 +46,9 @@ export class ArtistService {
 
   async update(id: string, updateArtistDto: UpdateArtistDto) {
     await this.artistRepository.update(id, updateArtistDto);
-    const updatedArtist = await this.artistRepository.findOne({where: {id}});
+    const updatedArtist = await this.artistRepository.findOne({
+      where: { id },
+    });
     if (!updatedArtist) {
       throw new NotFoundException('Artist not found');
     }
@@ -54,15 +56,15 @@ export class ArtistService {
   }
 
   async remove(id: string) {
-    const artist = await this.artistRepository.findOne({where: {id}});
+    const artist = await this.artistRepository.findOne({ where: { id } });
 
     if (!artist) {
       throw new NotFoundException('Artist not found');
     }
 
-    await this.favArtistsRepository.delete({artistId: id});
-    await this.trackRepository.update({artistId: id}, {artistId: null});
-    await this.albumRepository.update({artistId: id}, {artistId: null});
+    await this.favArtistsRepository.delete({ artistId: id });
+    await this.trackRepository.update({ artistId: id }, { artistId: null });
+    await this.albumRepository.update({ artistId: id }, { artistId: null });
     await this.artistRepository.delete(id);
   }
 

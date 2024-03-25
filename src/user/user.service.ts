@@ -1,17 +1,17 @@
-import {Injectable, NotFoundException,} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserDto } from './dto/user.dto';
-import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
   constructor(
-      @InjectRepository(User)
-      private userRepository: Repository<User>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -19,7 +19,7 @@ export class UserService {
       ...createUserDto,
       version: 1,
       createdAt: Math.floor(Date.now() / 1000),
-      updatedAt: Math.floor(Date.now() / 1000)
+      updatedAt: Math.floor(Date.now() / 1000),
     });
     await this.userRepository.save(user);
     return this.toDto(user);
@@ -31,7 +31,7 @@ export class UserService {
   }
 
   async findOne(id: string) {
-    const user = await this.userRepository.findOne({where: {id}});
+    const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -39,7 +39,7 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.findOne({where: {id}});
+    const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -47,11 +47,11 @@ export class UserService {
     await this.userRepository.update(id, {
       login: updateUserDto.login,
       password: updateUserDto.newPassword,
-      version: user.version+=1,
-      updatedAt: Math.floor(Date.now() / 1000)+1
+      version: (user.version += 1),
+      updatedAt: Math.floor(Date.now() / 1000) + 1,
     });
 
-    const updatedUser = await this.userRepository.findOne({where: {id}});
+    const updatedUser = await this.userRepository.findOne({ where: { id } });
     if (!updatedUser) {
       throw new NotFoundException('User not found');
     }
@@ -59,7 +59,7 @@ export class UserService {
   }
 
   async remove(id: string) {
-    const user = await this.userRepository.findOne({where: {id}});
+    const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {
       throw new NotFoundException('User not found');

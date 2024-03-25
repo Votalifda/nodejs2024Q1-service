@@ -29,9 +29,9 @@ import { ConfigModule } from '@nestjs/config';
     ArtistModule,
     TrackModule,
     AlbumModule,
-    FavsModule],
+    FavsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-
 export class AppModule {}

@@ -9,23 +9,24 @@ import {
   HttpCode,
   HttpStatus,
   BadRequestException,
-  Put, ForbiddenException,
+  Put,
+  ForbiddenException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UUIdValidationPipe } from '../validation/uuid-validation.pipe';
-import {InjectRepository} from "@nestjs/typeorm";
-import {User} from "./entities/user.entity";
-import {Repository} from "typeorm";
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Controller('user')
 export class UserController {
   constructor(
-      private readonly userService: UserService,
-      @InjectRepository(User)
-      private userRepository: Repository<User>,
-    ) {}
+    private readonly userService: UserService,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -55,11 +56,14 @@ export class UserController {
     @Param('id', UUIdValidationPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    const user = await this.userRepository.findOne({where: {id}});
+    const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    if (updateUserDto.password == updateUserDto.oldPassword || user.password != updateUserDto.oldPassword) {
+    if (
+      updateUserDto.password == updateUserDto.oldPassword ||
+      user.password != updateUserDto.oldPassword
+    ) {
       throw new ForbiddenException('Password is wrong');
     }
     return await this.userService.update(id, updateUserDto);

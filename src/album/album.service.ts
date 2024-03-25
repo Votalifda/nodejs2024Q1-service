@@ -1,13 +1,13 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { plainToClass } from 'class-transformer';
 import { AlbumDto } from './dto/album.dto';
 import { Album } from './entities/album.entity';
-import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
-import {FavAlbums} from "../favs/entities/favAlbums.entity";
-import {Track} from "../track/entities/track.entity";
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { FavAlbums } from '../favs/entities/favAlbums.entity';
+import { Track } from '../track/entities/track.entity';
 
 @Injectable()
 export class AlbumService {
@@ -32,7 +32,7 @@ export class AlbumService {
   }
 
   async findOne(id: string) {
-    const album = await this.albumRepository.findOne({where: {id}});
+    const album = await this.albumRepository.findOne({ where: { id } });
     if (!album) {
       throw new NotFoundException('Album not found');
     }
@@ -41,7 +41,7 @@ export class AlbumService {
 
   async update(id: string, updateAlbumDto: UpdateAlbumDto) {
     await this.albumRepository.update(id, updateAlbumDto);
-    const updatedAlbum = await this.albumRepository.findOne({where: {id}});
+    const updatedAlbum = await this.albumRepository.findOne({ where: { id } });
     if (!updatedAlbum) {
       throw new NotFoundException('Album not found');
     }
@@ -49,14 +49,14 @@ export class AlbumService {
   }
 
   async remove(id: string) {
-    const album = await this.albumRepository.findOne({where: {id}});
+    const album = await this.albumRepository.findOne({ where: { id } });
 
     if (!album) {
       throw new NotFoundException('Album not found');
     }
 
-    await this.favAlbumsRepository.delete({albumId: id});
-    await this.trackRepository.update({albumId: id}, {albumId: null});
+    await this.favAlbumsRepository.delete({ albumId: id });
+    await this.trackRepository.update({ albumId: id }, { albumId: null });
     await this.albumRepository.delete(id);
   }
 

@@ -1,20 +1,20 @@
-import {Injectable,  NotFoundException} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { TrackDto } from './dto/track.dto';
 import { plainToClass } from 'class-transformer';
-import {Track} from "./entities/track.entity";
-import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
-import {FavTracks} from "../favs/entities/favTracks.entity";
+import { Track } from './entities/track.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { FavTracks } from '../favs/entities/favTracks.entity';
 
 @Injectable()
 export class TrackService {
   constructor(
-      @InjectRepository(Track)
-      private trackRepository: Repository<Track>,
-      @InjectRepository(FavTracks)
-      private favTracksRepository: Repository<FavTracks>,
+    @InjectRepository(Track)
+    private trackRepository: Repository<Track>,
+    @InjectRepository(FavTracks)
+    private favTracksRepository: Repository<FavTracks>,
   ) {}
 
   async create(createTrackDto: CreateTrackDto) {
@@ -29,7 +29,7 @@ export class TrackService {
   }
 
   async findOne(id: string) {
-    const track = await this.trackRepository.findOne({where: {id}});
+    const track = await this.trackRepository.findOne({ where: { id } });
     if (!track) {
       throw new NotFoundException('Track not found');
     }
@@ -38,7 +38,7 @@ export class TrackService {
 
   async update(id: string, updateTrackDto: UpdateTrackDto) {
     await this.trackRepository.update(id, updateTrackDto);
-    const updatedTrack = await this.trackRepository.findOne({where: {id}});
+    const updatedTrack = await this.trackRepository.findOne({ where: { id } });
     if (!updatedTrack) {
       throw new NotFoundException('Track not found');
     }
@@ -46,13 +46,13 @@ export class TrackService {
   }
 
   async remove(id: string) {
-    const track = await this.trackRepository.findOne({where: {id}});
+    const track = await this.trackRepository.findOne({ where: { id } });
 
     if (!track) {
       throw new NotFoundException('Track not found');
     }
 
-    await this.favTracksRepository.delete({trackId: id});
+    await this.favTracksRepository.delete({ trackId: id });
     await this.trackRepository.delete(id);
   }
 

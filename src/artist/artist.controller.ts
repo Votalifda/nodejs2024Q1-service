@@ -44,7 +44,7 @@ export class ArtistController {
     @Param('id', UUIdValidationPipe) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {
-    if (!await this.artistService.findOne(id)) {
+    if (!(await this.artistService.findOne(id))) {
       throw new NotFoundException('Artist not found');
     }
 

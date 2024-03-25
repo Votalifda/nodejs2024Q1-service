@@ -7,7 +7,6 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  BadRequestException,
   NotFoundException,
   Put,
 } from '@nestjs/common';
@@ -41,7 +40,7 @@ export class AlbumController {
     @Param('id', UUIdValidationPipe) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-    if (! await this.albumService.findOne(id)) {
+    if (!(await this.albumService.findOne(id))) {
       throw new NotFoundException('Album not found');
     }
 

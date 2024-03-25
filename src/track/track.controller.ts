@@ -8,7 +8,6 @@ import {
   NotFoundException,
   HttpCode,
   HttpStatus,
-  BadRequestException,
   Put,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
@@ -45,7 +44,7 @@ export class TrackController {
     @Param('id', UUIdValidationPipe) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
   ) {
-    if (!await this.trackService.findOne(id)) {
+    if (!(await this.trackService.findOne(id))) {
       throw new NotFoundException('Track not found');
     }
 
