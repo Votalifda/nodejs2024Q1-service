@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryColumn } from 'typeorm';
 
-@Entity()
+@Entity('fav_artists')
 export class FavArtists {
   @Column()
   @PrimaryColumn('uuid')
