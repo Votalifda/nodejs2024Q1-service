@@ -23,12 +23,6 @@ export class TrackController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createTrackDto: CreateTrackDto) {
-    if (!createTrackDto.name) {
-      throw new BadRequestException('Name is required');
-    } else if (!createTrackDto.duration) {
-      throw new BadRequestException('Duration is required');
-    }
-
     return this.trackService.create(createTrackDto);
   }
 
@@ -51,12 +45,6 @@ export class TrackController {
     @Param('id', UUIdValidationPipe) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
   ) {
-    if (!updateTrackDto.name) {
-      throw new BadRequestException('Name is required');
-    } else if (!updateTrackDto.duration) {
-      throw new BadRequestException('Duration is required');
-    }
-
     if (!this.trackService.findOne(id)) {
       throw new NotFoundException('Track not found');
     }

@@ -1,75 +1,71 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import {Injectable, NotFoundException,} from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './user.interface';
+import { User } from './entities/user.entity';
 import { UserDto } from './dto/user.dto';
+import {InjectRepository} from "@nestjs/typeorm";
+import {Repository} from "typeorm";
 
 @Injectable()
 export class UserService {
-  private users: User[] = [];
+  constructor(
+      @InjectRepository(User)
+      private userRepository: Repository<User>,
+  ) {}
 
-  create(createUserDto: CreateUserDto) {
-    const user: User = {
-      id: uuidv4(),
-      login: createUserDto.login,
-      password: createUserDto.password,
+  async create(createUserDto: CreateUserDto) {
+    const user = this.userRepository.create({
+      ...createUserDto,
       version: 1,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    };
-    this.users.push(user);
+      createdAt: Math.floor(Date.now() / 1000),
+      updatedAt: Math.floor(Date.now() / 1000)
+    });
+    await this.userRepository.save(user);
     return this.toDto(user);
   }
 
-  findAll() {
-    return this.users.map((user) => this.toDto(user));
+  async findAll() {
+    const users = await this.userRepository.find();
+    return users.map((user) => this.toDto(user));
   }
 
-  findOne(id: string): UserDto {
-    const user = this.users.find((user) => user.id === id);
+  async findOne(id: string) {
+    const user = await this.userRepository.findOne({where: {id}});
     if (!user) {
       throw new NotFoundException('User not found');
     }
     return this.toDto(user);
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    const user = this.users.find((user) => user.id === id);
-
-    if (!user && !updateUserDto.newPassword) {
-      throw new BadRequestException('newPassword');
-    }
-
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOne({where: {id}});
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    if (user?.password && user.password !== updateUserDto.oldPassword) {
-      throw new ForbiddenException('Old password is wrong');
+    await this.userRepository.update(id, {
+      login: updateUserDto.login,
+      password: updateUserDto.newPassword,
+      version: user.version+=1,
+      updatedAt: Math.floor(Date.now() / 1000)
+    });
+
+    const updatedUser = await this.userRepository.findOne({where: {id}});
+    if (!updatedUser) {
+      throw new NotFoundException('User not found');
     }
-
-    user.password = updateUserDto.newPassword;
-    user.version++;
-    user.updatedAt = Date.now();
-
-    return this.toDto(user);
+    return this.toDto(updatedUser);
   }
 
-  remove(id: string) {
-    const user = this.users.find((user) => user.id === id);
+  async remove(id: string) {
+    const user = await this.userRepository.findOne({where: {id}});
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    this.users = this.users.filter((user) => user.id !== id);
+    await this.userRepository.delete(id);
   }
 
   private toDto(user: User): UserDto {

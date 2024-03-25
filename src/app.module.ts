@@ -12,7 +12,7 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-      TypeOrmModule.forRoot({
+    TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'postgres',
       port: 5432,
@@ -20,7 +20,7 @@ import { ConfigModule } from '@nestjs/config';
       password: process.env.POSTGRES_PASSWORD || 'postgres',
       database: process.env.POSTGRES_DB || 'postgres ',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      logging: true,
+      logging: false,
       synchronize: true,
       migrationsTableName: 'typeorm_migrations',
       migrationsRun: false,

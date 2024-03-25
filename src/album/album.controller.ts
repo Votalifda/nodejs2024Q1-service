@@ -24,12 +24,6 @@ export class AlbumController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createAlbumDto: CreateAlbumDto) {
-    if (!createAlbumDto.name) {
-      throw new BadRequestException('Name is required');
-    } else if (!createAlbumDto.year) {
-      throw new BadRequestException('Year is required');
-    }
-
     return this.albumService.create(createAlbumDto);
   }
 
@@ -52,12 +46,6 @@ export class AlbumController {
     @Param('id', UUIdValidationPipe) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-    if (!updateAlbumDto.name || !isString(updateAlbumDto.name)) {
-      throw new BadRequestException('Name is required');
-    } else if (!updateAlbumDto.year || !isNumber(updateAlbumDto.year)) {
-      throw new BadRequestException('Year is required');
-    }
-
     if (!this.albumService.findOne(id)) {
       throw new NotFoundException('Album not found');
     }
