@@ -2,7 +2,7 @@ version: '3'
 
 services:
   postgres:
-    restart: always
+    restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile.postgres
@@ -19,7 +19,8 @@ services:
       - postgres_logs:/var/log/postgresql
 
   app:
-    restart: always
+    restart: unless-stopped
+    command: npm run start:dev
     build:
       context: .
       dockerfile: Dockerfile.app
@@ -27,6 +28,7 @@ services:
       - "${PORT}:${PORT}"
     environment:
       - PORT=${PORT}
+      - NODE_ENV=development
     volumes:
       - ./src:/usr/src/app/src
     depends_on:
