@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  postgres:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+    ports:
+      - "5444:5432"
+    networks:
+      - user-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_logs:/var/log/postgresql
+
+  app:
+    restart: unless-stopped
+    command: >
+      sh -c "npm run migrate && npm run start:dev"
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      PORT: ${PORT}
+      NODE_ENV: development
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+    volumes:
+      - ./src:/usr/src/app/src
+    depends_on:
+      - postgres
+    networks:
+      - user-network
+
+networks:
+  user-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  postgres_logs:
